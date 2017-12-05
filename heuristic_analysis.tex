@@ -2,6 +2,7 @@
 \usepackage[a4paper, margin=2cm]{geometry}
 \usepackage{tabularx}
 \usepackage{booktabs}
+\usepackage{graphicx}
 \usepackage{minted}
 \setminted{fontsize=\small,baselinestretch=1}
 \author{Andrzej Wytyczak-Partyka}
@@ -105,41 +106,30 @@ AB\_Custom\_2 are not statistically different from AB\_Improved.
 \label{fig-tab-tournament-results}
 \end{figure}
 
+\begin{figure}[htbp]
+\centering
+\begin{tabular}{lrrrr}
+\toprule
+{} &  AB\_Improved &  AB\_Custom &  AB\_Custom\_2 &  AB\_Custom\_3 \\
+\midrule
+count &    20.000000 &  20.000000 &    20.000000 &    20.000000 \\
+mean  &    63.845000 &  61.710000 &    63.360000 &    59.145000 \\
+std   &     4.762073 &   3.788056 &     5.244887 &     4.337047 \\
+min   &    52.900000 &  54.300000 &    54.300000 &    50.000000 \\
+25\%   &    61.400000 &  59.650000 &    59.650000 &    55.700000 \\
+50\%   &    64.300000 &  61.400000 &    63.600000 &    59.300000 \\
+75\%   &    67.100000 &  64.650000 &    67.100000 &    63.250000 \\
+max   &    71.400000 &  68.600000 &    74.300000 &    65.700000 \\
+\bottomrule
+\end{tabular}
+\caption{Descriptive statistics for 20 runs of tournament}
+\end{figure}
 
 \begin{figure}
-  \centering
-\begin{tabular}{lrrr}
-\toprule
-\# &  Custom vs Improved &  Custom\_2 vs Improved &  Custom\_3 vs Improved \\
-\midrule
-0  &                -7.1 &                  -8.5 &                  -7.1 \\
-1  &                 4.3 &                  -5.7 &                   5.7 \\
-2  &                 4.2 &                  -2.9 &                  11.4 \\
-3  &                -4.3 &                  -2.9 &                  11.4 \\
-4  &                 7.1 &                   1.4 &                   4.3 \\
-5  &                 4.3 &                   4.3 &                   4.3 \\
-6  &                 4.3 &                  -4.3 &                   7.1 \\
-7  &                 2.8 &                   4.3 &                   1.4 \\
-8  &                 7.1 &                   2.8 &                  11.4 \\
-9  &                10.0 &                  12.8 &                   8.5 \\
-10 &                10.0 &                   4.2 &                   8.5 \\
-11 &                 0.0 &                   7.2 &                   7.2 \\
-12 &                -2.8 &                   5.7 &                  11.4 \\
-13 &                10.0 &                  12.8 &                  11.4 \\
-14 &                 5.7 &                   0.0 &                   2.8 \\
-15 &                -1.4 &                   1.4 &                  -1.4 \\
-16 &                -4.3 &                  -5.7 &                  -5.7 \\
-17 &                -4.3 &                  -2.9 &                   5.7 \\
-18 &                -4.3 &                  -5.7 &                  -1.4 \\
-19 &                 1.4 &                  -8.6 &                  -2.9 \\
-\bottomrule
-\bottomrule
-sum:   &                42.7 &                   9.7 &                  94.0 \\
-\bottomrule
-
-\end{tabular}
-\caption{Difference between Custom heuristics and AB\_Improved heuristic}
-\label{fig-tab-tournament-result-diffs}
+  \includegraphics{boxplot.eps}
+  \caption{Box plot for AB\_Improved and custom heuristics}
+  \label{fig-box-pot}
 \end{figure}
+
 
 \end{document}
