@@ -1,0 +1,145 @@
+\documentclass[12pt, a4paper]{article}
+\usepackage[a4paper, margin=2cm]{geometry}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{minted}
+\setminted{fontsize=\small,baselinestretch=1}
+\author{Andrzej Wytyczak-Partyka}
+\title{AIND Isolation game playing agent report}
+\begin{document}
+\maketitle
+The task was to implement an agent playing the Isolation game, using Minimax with
+alpha-beta pruning and iterative deepening. The agent would use one of 3 heuristics
+for assesing current board state during termination of each search. Termination
+happens either when end-game is reached or when the search reaches specified depth.
+
+The heuristic implemented were:
+\begin{itemize}
+  \item AB\_Custom - For first 5 moves - use the distance from center heuristic, Later in the game - use the number of my moves - number of opponent moves
+  \item AB\_Custom\_2 - For first 40 moves - use distance between opponent's pieces, later in the game - use the square of number of available moves
+  \item AB\_Custom\_3 - For first 3 moves - assign High score for center move, later assign higher points to locations near the center, finally use square of number of available moves
+\end{itemize}
+
+I examined the results of 20 runs of the tournament.py script (shown in Figure \ref{fig-tab-tournament-results})
+and ran simple statistical analysis, as shown in Figure \ref{fig-code-ttest}.
+
+\begin{figure}[hbtp]
+\begin{minted}{python}
+print("h0 is that AB_Improved has the same performance as AB_Custom")
+
+[stat,pvalue] = stats.ttest_ind(df['AB_Improved'], df['AB_Custom'], 0)
+if(pvalue < 0.05):
+    print('h0 rejected - AB_Improved does not have the same performance as AB_Custom')
+else:
+    print('h0 accepted - AB_Improved does have the same performance as AB_Custom')
+
+print("h0 is that AB_Improved has the same performance as AB_Custom_2")
+
+[stat,pvalue] = stats.ttest_ind(df['AB_Improved'], df['AB_Custom_2'], 0)
+if(pvalue < 0.05):
+    print('h0 rejected - AB_Improved does not have the same performance as AB_Custom_2')
+else:
+    print('h0 accepted - AB_Improved does have the same performance as AB_Custom_2')
+
+print("h0 is that AB_Improved has the same performance as AB_Custom_3")
+
+[stat,pvalue] = stats.ttest_ind(df['AB_Improved'], df['AB_Custom_3'], 0)
+if(pvalue < 0.05):
+    print('h0 rejected - AB_Improved does not have the same performance as AB_Custom_3')
+else:
+    print('h0 accepted - AB_Improved does have the same performance as AB_Custom_3')
+\end{minted}
+\caption{Python code to determine if heuristics differ from AB\_Improved}
+\label{fig-code-ttest}
+\end{figure}
+
+The result of the analysis (as seen in Figure \ref{fig-code-ttest-results}) confirms
+that AB\_Custom\_3 is far worse than AB\_Improved, as well as that AB\_Custom and
+AB\_Custom\_2 are not statistically different from AB\_Improved.
+
+\begin{figure}
+
+  \begin{minted}{python}
+    h0 is that AB_Improved has the same performance as AB_Custom
+    h0 accepted - AB_Improved does have the same performance as AB_Custom
+    h0 is that AB_Improved has the same performance as AB_Custom_2
+    h0 accepted - AB_Improved does have the same performance as AB_Custom_2
+    h0 is that AB_Improved has the same performance as AB_Custom_3
+    h0 rejected - AB_Improved does not have the same performance as AB_Custom_3
+  \end{minted}
+\caption{Results of t-test verification}
+\label{fig-code-ttest-results}
+\end{figure}
+
+\begin{figure}
+  \centering
+\begin{tabular}{lrrrr}
+\toprule
+\# &  AB\_Improved &  AB\_Custom &  AB\_Custom\_2 &  AB\_Custom\_3 \\
+\midrule
+0  &         52.9 &       60.0 &         61.4 &         60.0 \\
+1  &         61.4 &       57.1 &         67.1 &         55.7 \\
+2  &         67.1 &       62.9 &         70.0 &         55.7 \\
+3  &         61.4 &       65.7 &         64.3 &         50.0 \\
+4  &         61.4 &       54.3 &         60.0 &         57.1 \\
+5  &         68.6 &       64.3 &         64.3 &         64.3 \\
+6  &         70.0 &       65.7 &         74.3 &         62.9 \\
+7  &         65.7 &       62.9 &         61.4 &         64.3 \\
+8  &         67.1 &       60.0 &         64.3 &         55.7 \\
+9  &         67.1 &       57.1 &         54.3 &         58.6 \\
+10 &         67.1 &       57.1 &         62.9 &         58.6 \\
+11 &         62.9 &       62.9 &         55.7 &         55.7 \\
+12 &         64.3 &       67.1 &         58.6 &         52.9 \\
+13 &         71.4 &       61.4 &         58.6 &         60.0 \\
+14 &         67.1 &       61.4 &         67.1 &         64.3 \\
+15 &         60.0 &       61.4 &         58.6 &         61.4 \\
+16 &         54.3 &       58.6 &         60.0 &         60.0 \\
+17 &         61.4 &       65.7 &         64.3 &         55.7 \\
+18 &         64.3 &       68.6 &         70.0 &         65.7 \\
+19 &         61.4 &       60.0 &         70.0 &         64.3 \\
+
+\bottomrule
+
+\end{tabular}
+\caption{Percent of games won during 20 runs of `python tournament.py`}
+\label{fig-tab-tournament-results}
+\end{figure}
+
+
+\begin{figure}
+  \centering
+\begin{tabular}{lrrr}
+\toprule
+\# &  Custom vs Improved &  Custom\_2 vs Improved &  Custom\_3 vs Improved \\
+\midrule
+0  &                -7.1 &                  -8.5 &                  -7.1 \\
+1  &                 4.3 &                  -5.7 &                   5.7 \\
+2  &                 4.2 &                  -2.9 &                  11.4 \\
+3  &                -4.3 &                  -2.9 &                  11.4 \\
+4  &                 7.1 &                   1.4 &                   4.3 \\
+5  &                 4.3 &                   4.3 &                   4.3 \\
+6  &                 4.3 &                  -4.3 &                   7.1 \\
+7  &                 2.8 &                   4.3 &                   1.4 \\
+8  &                 7.1 &                   2.8 &                  11.4 \\
+9  &                10.0 &                  12.8 &                   8.5 \\
+10 &                10.0 &                   4.2 &                   8.5 \\
+11 &                 0.0 &                   7.2 &                   7.2 \\
+12 &                -2.8 &                   5.7 &                  11.4 \\
+13 &                10.0 &                  12.8 &                  11.4 \\
+14 &                 5.7 &                   0.0 &                   2.8 \\
+15 &                -1.4 &                   1.4 &                  -1.4 \\
+16 &                -4.3 &                  -5.7 &                  -5.7 \\
+17 &                -4.3 &                  -2.9 &                   5.7 \\
+18 &                -4.3 &                  -5.7 &                  -1.4 \\
+19 &                 1.4 &                  -8.6 &                  -2.9 \\
+\bottomrule
+\bottomrule
+sum:   &                42.7 &                   9.7 &                  94.0 \\
+\bottomrule
+
+\end{tabular}
+\caption{Difference between Custom heuristics and AB\_Improved heuristic}
+\label{fig-tab-tournament-result-diffs}
+\end{figure}
+
+\end{document}
