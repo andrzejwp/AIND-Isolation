@@ -41,24 +41,6 @@ def custom_score(game, player):
     if game.is_winner(player):
         return float("inf")
 
-    # Detect partition
-    # player moves as a chess knight
-    # if partitioned - winner is the one with most moves
-    # cast rays from position in all directions and check if there is no partition
-    # _ | _ | x | _ | _
-    # _ | x | _ | v | _
-    # o | x | _ | _ | _
-    # _ | x |x_ | _ | _
-    # _ | _ | x | _ | _
-
-    #  _ | _ | _ | _ | _
-    # _ | _ | _ | _ | _
-    # _ | _ | x | x | x
-    # _ | _ | x | _ | _
-    # _ | _ | x | _ | o
-
-    # rays
-
     # For first 5 moves - use the distance from center heuristic
 
     if game.move_count < 5:
@@ -97,48 +79,23 @@ def custom_score_2(game, player):
         The heuristic value of the current game state to the specified player.
     """
 
+
+
     if game.is_loser(player):
         return float("-inf")
 
     if game.is_winner(player):
+    #    print(game.print_board())
         return float("inf")
 
-    if game.move_count < 1:
+    if game.move_count<40:
 
-        neg_inf =float('-inf')
-        pos_inf = float('inf')
-
-        board = np.full((game.width, game.height), neg_inf)
-        moves = [(-2, -1), (-2, 1), (-1, -2), (-1, 2),
-                      (1, -2), (1, 2), (2, -1), (2, 1)]
-
-        for mx,my in moves:
-                board[game.width//2 + mx, game.height//2 + my]=500
-
-        board[game.width//2, game.height//2] = pos_inf
-        return board[game.get_player_location(player)]
-        #w, h = game.width / 2., game.height / 2.
-        #y, x = game.get_player_location(player)
-        #return float((h - y)**2 + (w - x)**2)
+        opponent_location = game.get_player_location(game.get_opponent(player))
+        player_location = game.get_player_location(player)
+        distance = (opponent_location[0]-player_location[0])**2 + (opponent_location[1]-player_location[1])**2
+        return distance
     else:
-        # Reflection only if possible to reflect
-        # opponent_position = game.get_player_location(game.get_opponent(player))
-        # if(opponent_position in [])
-        # if game.move_count < 15:
-        #
-        #     neg_inf =float('-inf')
-        #     pos_inf = float('inf')
-        #     board = np.full((game.width, game.height), neg_inf)
-        #     opponent_from_center = [opponent_position[0]-game.width//2,opponent_position[1] - game.height//2]
-        #     my_reflection = [game.width//2 - opponent_from_center[0],game.height//2- opponent_from_center[1]]
-        #     board[my_reflection] = 200
-        #     return board[game.get_player_location(player)]
-        # else:
-        own_moves = len(game.get_legal_moves(player))
-        opp_moves = len(game.get_legal_moves(game.get_opponent(player)))
-        return float(own_moves - opp_moves)
-
-
+        return len(game.get_legal_moves(player))**2
 
 def custom_score_3(game, player):
     """Calculate the heuristic value of a game state from the point of view
@@ -168,10 +125,27 @@ def custom_score_3(game, player):
     if game.is_winner(player):
         return float("inf")
 
-    # High score for center move
-    if(game.get_player_location(player) == [game.width//2,game.height//2]):
+    # High score for center move at beginning
+    if(game.move_count < 3 and game.get_player_location(player) == [game.width//2,game.height//2]):
         return float("inf")
 
+    # Occupy near the center
+    if(game.move_count < 5):
+        neg_inf =float('-inf')
+        pos_inf = float('inf')
+
+        board = np.full((game.width, game.height), neg_inf)
+
+        my_location = game.get_player_location(player)
+        moves = [(-2, -1), (-2, 1), (-1, -2), (-1, 2),
+                      (1, -2), (1, 2), (2, -1), (2, 1)]
+
+        for mx,my in moves:
+                if my_location == [game.width//2 + mx, game.height//2 + my]:
+                    return 500
+
+    if(game.move_count > 10):
+        return len(game.get_legal_moves(player))**2
 
     return len(game.get_blank_spaces())
 
