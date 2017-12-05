@@ -1,0 +1,37 @@
+\documentclass[a4paper]{article}
+\author{Andrzej Wytyczak-Partyka}
+\title{Game-playing paper review}
+\begin{document}
+\maketitle
+In 2016 Google\'s AlphaGo has beaten Fan Hui, the European Go champion 5:0.
+It uses a modified approach to searching the game state space that allows it to
+take more intelligent decisions as well as reduce the computational cost involved.
+
+So far the best computer players in Go were based on the Monte Carlo tree search algorithm
+and employed a fair number of carefully selected strategies, defined and implemented
+by domain masters.
+
+In general games like Go or chess can be completely described by constructin a tree
+of possible move sequences. Such a tree would have size of $b^d$, in chess
+$b=35$, $d=80$, in Go $b=250$, $d=150$. Such vast state space cannot be navigated
+using modern computers, especially in time-bound tasks, like gameplay, and so it
+has to be greatly reduced in order to compete in games like Go.
+
+Two general principles can be followed in order to reduce the search space to a sensible size:
+\begin{itemize}
+  \item{reduce depth by position evaluation - truncate the search tree at state $s$ and replace the subtree with an estimate that predicts the outcome of the game from state $s$ - similarly to the heuristic used in minimax with alpha-beta pruning and iterative deepening}
+  \item{reduce breadth of the search by sampling actions from ap olicy p(a|s) (probability distribution over possible moves $a$ in position $s$)}
+\end{itemize}
+
+Pre alpha-go state-of-the art players used MCTS (Monte Carlo tree search) enhanced
+with policies, that help narrow down the search space of high-probability actions,
+
+Alpha-go uses separate, individually trained, deep neural nets to serve as value
+estimation and policy. The training pipeline consists of several steps of supervised
+and reinforcement learning of each of the networks. Finally the networks are combined
+in and Monte Carlo Tree Search algorithm using lookahead search.
+
+
+
+Previous breakthrough in Go play led to advances in many fields - planning, scheduling, constraint satisfaction. It is expected that likewise - the use of deep neural nets will bring significant improvements in these fields.
+\end{document}
